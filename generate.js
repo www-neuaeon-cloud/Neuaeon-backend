@@ -4,7 +4,18 @@
 // It acts as a secure backend to handle API requests.
 
 export default async function handler(req, res) {
-    // Only allow POST requests
+    // --- CORS Headers ---
+    // This allows your frontend (wherever it's hosted) to make requests to this backend.
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+    // Handle the browser's preflight request. This is required for CORS to work.
+    if (req.method === 'OPTIONS') {
+        return res.status(200).end();
+    }
+
+    // Only allow POST requests after the preflight check
     if (req.method !== 'POST') {
         res.setHeader('Allow', 'POST');
         return res.status(405).end('Method Not Allowed');
